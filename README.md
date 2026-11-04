@@ -4,31 +4,24 @@ Local Axial Mamba Network for Multi-class Vertebral Segmentation in CT Images
 
 Authors: Hao Zuo, Dongsheng Zhou, Chao Che, and Tianming Zhao (Dalian University).
 
-## Current release scope
+## Model implementation
 
-The current `main` branch is a **limited, documentation-only interface preview**.
-It is not a runnable implementation and cannot by itself reproduce the paper's
-training or evaluation. `model.py` contains only an explicitly non-executable
-interface stub; it is not the network used for the reported experiments.
+`model.py` contains the PyTorch network definition, including the shared encoder,
+Inter-slice Mamba, Adaptive Attention Skip Fusion (AASF), decoder, and segmentation
+heads. The class `LAA_Mamba_SpineSeg` implements LAM-NET; `LAA` implements AASF.
 
-The following are **not included in the current tree**:
+The model requires PyTorch. Its Mamba backend uses `mamba-ssm` and
+`causal-conv1d`; the included S4D fallback is a different backend and does not
+reproduce the paper's Mamba experiment. Install dependencies from their upstream
+projects in a compatible CUDA environment.
 
-- Network internals, including Inter-slice Mamba, AASF, and the decoder.
-- Data loading, preprocessing, label mapping, and the experiment split.
-- Training, checkpoint selection, and physical-distance evaluation routines.
-- Training configurations, trained weights, CT images, annotations, and logs.
+The model returns a dictionary with `logits_25`, `logits_4`, and `logits_2`.
+Input organization is controlled by the constructor arguments; inter-slice inputs
+have shape `(B, K, C, H, W)`.
 
-## Method overview
+## Scope
 
-LAM-NET combines sampled axial contextual conditioning, adaptive attention skip
-fusion, and hierarchical auxiliary supervision for vertebral segmentation in CT.
-Consult the manuscript for the method and experimental protocol. This preview
-does not provide commands for reproducing the reported numerical results.
-
-## Version history
-
-This scope describes the latest branch contents. Earlier commits contained a
-more complete source release; replacing the current files does not remove those
-commits or copies already obtained by others. The implementation is not bundled
-with this current preview. A future full release, if made, will be identified
-explicitly here.
+This repository provides the model implementation. Data loading and preprocessing,
+training and checkpoint selection, experiment split files, evaluation scripts,
+and trained weights are not included. The model file alone is not an end-to-end
+reproduction package. Dataset access is subject to the original providers' terms.
